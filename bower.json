@@ -25,6 +25,10 @@
     "tests"
   ],
   "dependencies": {
-    "angular": "angularjs#^1.5.3"
+    "angular": "angularjs#^1.5.3",
+    "angular-swipe": "^0.1.0"
+  },
+  "devDependencies": {
+    "angular-sanitize": "^1.5.5"
   }
 }

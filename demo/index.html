@@ -5,13 +5,15 @@
     <title>Demo</title>
     <link rel="stylesheet" href="../dist/proton.multi-list-picker.css">
     <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="../bower_components/angular-swipe/dist/angular-swipe.min.js"></script>
     <script src="../dist/proton.multi-list-picker.min.js"></script>
     <script src="app/app.js"></script>
     <script type="application/javascript" src="http://localhost:13001/livereload.js"></script>
 </head>
 <body ng-controller="MainController">
 <pre ng-bind="model | json"></pre>
-<proton:multi-list-picker ng-model="model" attachment="bottom">
+<proton:multi-list-picker ng-model="model" attachment="bottom" bind-html="true">
     <proton:multi-list-picker-list alias="year" source="getYears()">
     </proton:multi-list-picker-list>
     <proton:multi-list-picker-list alias="month">
@@ -49,8 +51,8 @@
     <proton:multi-list-picker-list alias="minute" source="getMinutes()">
     </proton:multi-list-picker-list>
     <proton:multi-list-picker-list alias="time">
-        <proton-multi-list-picker-list-item>AM</proton-multi-list-picker-list-item>
-        <proton-multi-list-picker-list-item>PM</proton-multi-list-picker-list-item>
+        <proton-multi-list-picker-list-item>00</proton-multi-list-picker-list-item>
+        <proton-multi-list-picker-list-item>01</proton-multi-list-picker-list-item>
     </proton:multi-list-picker-list>
 </proton:multi-list-picker>
 </body>

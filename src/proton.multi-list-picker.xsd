@@ -7,25 +7,76 @@
     <xs:element name="multi-list-picker" type="MultiListPicker"/>
 
     <xs:complexType name="MultiListPicker">
+        <xs:annotation>
+            <xs:documentation source="description">This is the root element for defining a multi-list picker
+            component.</xs:documentation>
+        </xs:annotation>
         <xs:sequence>
             <xs:choice minOccurs="1" maxOccurs="unbounded">
                 <xs:element type="List" name="multi-list-picker-list"/>
-                <xs:element type="xs:string" name="multi-list-picker-divider"/>
+                <xs:element type="xs:string" name="multi-list-picker-divider">
+                    <xs:annotation>
+                        <xs:documentation source="description">A divider element between lists. The content of the
+                        element will be picked up and placed in the component. If <code>bindHtml</code> is set to
+                        <code>true</code>, it will be treated as HTML content.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
             </xs:choice>
         </xs:sequence>
-        <xs:attribute name="ng-model" type="xs:string" use="optional"/>
+        <xs:attribute name="ng-model" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation source="description">Let's you bind the value of this selector to an arbitrary
+                model in your scope. See documentation for <code>ngModel</code> in the AngularJS documentation for
+                more information.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="attachment" type="ComponentAttachment" use="optional"/>
+        <xs:attribute name="bind-html" type="xs:boolean" use="optional" default="false">
+            <xs:annotation>
+                <xs:documentation source="description">To use HTML binding, you will need to add a dependency
+                to <code>ngSanitize</code> to your module. If you do not have that dependency set up properly,
+                you will face exceptions when list items are being rendered</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="List">
+        <xs:annotation>
+            <xs:documentation source="description">Let's you define a list for the multi-list picker component.</xs:documentation>
+        </xs:annotation>
         <xs:sequence>
             <xs:element name="multi-list-picker-list-item" type="ListItem" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
-        <xs:attribute name="alias" type="xs:string" use="optional"/>
-        <xs:attribute name="source" type="xs:string" use="optional"/>
+        <xs:attribute name="alias" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation source="description">The property to which the value of this particular
+                list should be bound. This effectively refers to a specific property in the model object
+                as specified by <code>ngModel</code> on the list picker. If no alias is provided the numerical
+                index of this element is chosen.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="source" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation source="description">Let's you choose a data provider for the list. If none
+                is provided, we will expect to see a list of <code>protonMultiListPickerListItem</code>s.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:simpleType name="ComponentAttachment">
+        <xs:annotation>
+            <xs:documentation source="description">This attribute will let you define the attachment type of
+                the component to the screen. Possible values are:
+                <ul>
+                    <li><code>modal</code>: the component will be displayed as a modal dialog with appropriate close buttons</li>
+                    <li><code>inline</code>: the component will be displayed as an inline block</li>
+                    <li><code>bottom</code>: the component will be affixed to the bottom of the screen</li>
+                    <li><code>top</code>: the component will be affixed to the top of the screen</li>
+                    <li><code>left</code>: the component will be affixed to the left side of the screen</li>
+                    <li><code>right</code>: the component will be affixed to the right side of the screen</li>
+                </ul>
+            </xs:documentation>
+        </xs:annotation>
         <xs:restriction base="xs:string">
             <xs:enumeration value="modal"/>
             <xs:enumeration value="inline"/>
@@ -37,10 +88,22 @@
     </xs:simpleType>
 
     <xs:complexType name="ListItem" mixed="true">
+        <xs:annotation>
+            <xs:documentation source="description">This element let's you define a single list item. The
+            contents of this tag will be treated as the caption for the item, and if <code>bindHtml</code>
+            is set to <code>true</code> it will be treated as HTML. You will need to specify a <code>value</code>
+            attribute if you want to have values that are different from the inline HTML value of the tag.</xs:documentation>
+        </xs:annotation>
         <xs:sequence>
             <xs:any minOccurs="0" processContents="skip"/>
         </xs:sequence>
-        <xs:attribute name="value" type="xs:string" use="optional"/>
+        <xs:attribute name="value" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation source="description">Let's you define a value for this item that is different
+                from the inline tag content. When this item is picked, this is the value that will be set on the
+                model property.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
 </xs:schema>

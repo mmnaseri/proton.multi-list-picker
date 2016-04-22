@@ -1,0 +1,101 @@
+.proton-multi-list-picker {
+
+  & {
+    display: block;
+    font-size: 1rem;
+    font-family: "Helvetica Neue", Helvetica, "Open Sans", sans-serif;
+    font-weight: 200;
+    height: 7.8rem;
+    overflow: hidden;
+    border: 1px solid black;
+    text-outline: none;
+  }
+  
+  .proton-multi-list-picker-contents {
+    display: none;
+  }
+
+  .lists {
+
+    & {
+      display: inline-block;
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    .list-container {
+
+      & {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+      }
+
+      .list {
+
+        & {
+          display: block;
+          padding: 0;
+          margin: 0;
+          position: relative;
+          top: -1rem;
+        }
+
+        .item {
+
+          & {
+            display: block;
+            margin: 0 5px;
+            height: 1rem;
+            padding: 0.2rem 0.5rem;
+            text-align: center;
+          }
+
+          &.selected {
+          }
+
+          &.offset-1 {
+            opacity: 0.8;
+            transform : scale(1,0.9);
+            -webkit-transform:scale(1,0.9); /* Safari and Chrome */
+            -moz-transform:scale(1,0.9); /* Firefox */
+            -ms-transform:scale(1,0.9); /* IE 9+ */
+            -o-transform:scale(1,0.9); /* Opera */
+          }
+
+          &.offset-2 {
+            opacity: 0.5;
+            transform : scale(1,0.85);
+            -webkit-transform:scale(1,0.85); /* Safari and Chrome */
+            -moz-transform:scale(1,0.85); /* Firefox */
+            -ms-transform:scale(1,0.85); /* IE 9+ */
+            -o-transform:scale(1,0.85); /* Opera */
+          }
+
+          &.offset-3 {
+            opacity: 0.3;
+            transform : scale(1,0.8);
+            -webkit-transform:scale(1,0.8); /* Safari and Chrome */
+            -moz-transform:scale(1,0.8); /* Firefox */
+            -ms-transform:scale(1,0.8); /* IE 9+ */
+            -o-transform:scale(1,0.8); /* Opera */
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+  .after {
+    display: block;
+    height: 1.4rem;
+    border-top: 1px solid #d6d6d6;
+    border-bottom: 1px solid #d6d6d6;
+    position: relative;
+    top: -6.5rem;
+  }
+
+}

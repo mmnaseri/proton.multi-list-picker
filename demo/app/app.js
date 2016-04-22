@@ -6,7 +6,7 @@
  * AngularJS module for demoing the component
  * @type {angular.Module}
  */
-var module = angular.module('protonMultiListSelector', ['proton.multi-list-picker']);
+var module = angular.module('protonMultiListSelector', ['proton.multi-list-picker', 'ngSanitize', 'swipe']);
 
 module.run(function () {
 });
@@ -15,7 +15,8 @@ module.controller("MainController", function ($scope) {
     $scope.model = {
         year: 2000,
         month: 2,
-        day: 13
+        day: 4,
+        time: "01"
     };
     $scope.getYears = function () {
         var result = [];

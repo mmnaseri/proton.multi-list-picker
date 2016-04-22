@@ -8,36 +8,42 @@
     };
     var module = angular.module('proton.multi-list-picker', []);
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li ng-repeat=\'list in items track by $index\'>\n            <span class=\'divider\' ng-if=\'list.$divider\' ng-bind=\'list.$divider\'></span>\n            <ul class=\'list\' ng-if=\'!list.$divider\' ng-init=\'cached = (list.source() | protonMultiListArrayOf); view = (cached | protonMultiListView:selected(list.alias, cached));\'>\n                <li ng-repeat=\'item in view\'><span ng-bind=\'item.label\'></span></li>\n            </ul>\n        </li>\n    </ul>\n</div>");
+        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li ng-repeat=\'list in items track by $index\' class=\'list-container\'>\n            <span class=\'divider\' ng-if=\'list.$divider\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.$divider\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.$divider\'></span>\n            </span>\n            <ul class=\'list\' ng-if=\'!list.$divider\' ng-init=\'cached = (list.source() | protonMultiListArrayOf); selectedIndex = selected(list.alias, cached); view = (cached | protonMultiListView:selectedIndex);\'>\n                <li class=\'item {{item.index == selectedIndex ? \"selected\" : \"offset-\" + ($index &gt; 3 ? $index - 3 : 3 - $index)}}\' ng-repeat=\'item in view track by $index\' ng-swipe-up=\'swipeUp()\'>\n                    <span ng-if=\'!bindHtml\' ng-bind=\'item.label\'></span>\n                    <span ng-if=\'bindHtml\' ng-bind-html=\'item.label\'></span>\n                </li>\n            </ul>\n        </li>\n    </ul>\n    <div class=\'after\'></div>\n</div>");
     }]);
     module.directive('protonMultiListPicker', ["$parse", "$filter", function ($parse, $filter) {
+        var controller = function ProtonMultiListPickerController($scope) {
+            $scope.items = [];
+            this.addDivider = function (divider) {
+                $scope.items.push({
+                    $divider: divider
+                });
+            };
+            this.add = function (item) {
+                if (!item.alias) {
+                    item.alias = $scope.items.length;
+                }
+                $scope.items.push(item);
+            };
+        };
         return {
             restrict: "E",
+            replace: true,
             templateUrl: templates.picker,
             require: "?ngModel",
             controllerAs: "controller",
             scope: {},
             transclude: true,
-            controller: ["$scope", function ProtonMultiListPickerController($scope) {
-                $scope.items = [];
-                this.addDivider = function (divider) {
-                    $scope.items.push({
-                        $divider: divider
-                    });
-                };
-                this.add = function (item) {
-                    if (!item.alias) {
-                        item.alias = $scope.items.length;
-                    }
-                    $scope.items.push(item);
-                };
-            }],
+            controller: ["$scope", controller],
             link: function ($scope, $element, $attrs, ngModel) {
                 var controller = $scope.controller;
                 var parentScope = $element.parent().scope();
                 $scope.attachment = "bottom";
                 $attrs.$observe("attachment", function (attachment) {
                     $scope.attachment = attachment || "bottom";
+                });
+                $scope.bindHtml = false;
+                $attrs.$observe("bindHtml", function (bindHtml) {
+                    $scope.bindHtml = bindHtml == "true";
                 });
                 $scope.model = null;
                 $scope.$watch(function () {
@@ -53,23 +59,11 @@
                         }
                     });
                 }, true);
-                $scope.label = function (list, index) {
-                    if (list.index <= index || index < 0) {
-                        return null;
-                    }
-                    if (angular.isObject(list[index]) && angular.isDefined(list[index].label)) {
-                        return list[index].label;
-                    }
-                    return list[index];
-                };
                 $scope.value = function (list, index) {
                     if (list.index <= index || index < 0) {
                         return null;
                     }
-                    if (angular.isObject(list[index]) && angular.isDefined(list[index].value)) {
-                        return list[index].value;
-                    }
-                    return list[index];
+                    return list[index].value;
                 };
                 $scope.select = function (property, list, index) {
                     $scope.model[property] = $scope.value(list, index);
@@ -90,10 +84,19 @@
                     });
                     return index > -1 ? index : 0;
                 };
+                $scope.swipeUp = function () {
+                    console.log("UP");
+                };
             }
         };
     }]);
     module.directive('protonMultiListPickerList', [function () {
+        var controller = function ProtonMultiListPickerListController($scope) {
+            $scope.items = [];
+            this.add = function (item) {
+                $scope.items.push(item);
+            };
+        };
         return {
             scope: {
                 source: "&?",
@@ -101,12 +104,7 @@
             },
             restrict: "E",
             require: "^protonMultiListPicker",
-            controller: ["$scope", function ProtonMultiListPickerListController($scope) {
-                $scope.items = [];
-                this.add = function (item) {
-                    $scope.items.push(item);
-                };
-            }],
+            controller: ["$scope", controller],
             link: function ($scope, $element, $attrs, parent) {
                 parent.add({
                     source: function () {
@@ -152,28 +150,45 @@
                     index: i
                 });
             }
-            var loop = 0;
             if (items.length >= 7 && view.length < 7) {
-                loop = 7 - view.length;
+                var loop = 7 - view.length;
                 if (from == 0) {
                     loop = loop * -1;
                 }
-            }
-            if (loop < 0) {
-                for (i = items.length + loop; i < items.length; i++) {
-                    view.splice(i - items.length - loop, 0, {
-                        label: items[i].label,
-                        value: items[i].value,
-                        index: i
-                    });
+                if (loop < 0) {
+                    for (i = items.length + loop; i < items.length; i++) {
+                        view.splice(i - items.length - loop, 0, {
+                            label: items[i].label,
+                            value: items[i].value,
+                            index: i
+                        });
+                    }
+                } else if (loop > 0) {
+                    for (i = 0; i < loop; i++) {
+                        view.push({
+                            label: items[i].label,
+                            value: items[i].value,
+                            index: i
+                        });
+                    }
                 }
-            } else if (loop > 0) {
-                for (i = 0; i < loop; i++) {
-                    view.push({
-                        label: items[i].label,
-                        value: items[i].value,
-                        index: i
-                    });
+            } else if (view.length < 7) {
+                var cursor = items.length - 1;
+                while (pivot < 3) {
+                    view.splice(0, 0, items[cursor]);
+                    cursor --;
+                    if (cursor < 0) {
+                        cursor = items.length - 1;
+                    }
+                    pivot ++;
+                }
+                cursor = 0;
+                while (view.length < 7) {
+                    view.push(items[cursor]);
+                    cursor ++;
+                    if (cursor == items.length) {
+                        cursor = 0;
+                    }
                 }
             }
             return view;
