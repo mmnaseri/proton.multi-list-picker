@@ -55,6 +55,7 @@ gulp.task("demo", function () {
 gulp.task("scripts", function () {
     return gulp.src(paths.scripts)
         .pipe(concat('proton.multi-list-picker.min.js'))
+        .pipe(uglify())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(paths.dist.root))
         .pipe(refresh())

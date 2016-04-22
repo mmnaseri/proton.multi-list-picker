@@ -28,6 +28,7 @@
     <xs:simpleType name="ComponentAttachment">
         <xs:restriction base="xs:string">
             <xs:enumeration value="modal"/>
+            <xs:enumeration value="inline"/>
             <xs:enumeration value="bottom"/>
             <xs:enumeration value="top"/>
             <xs:enumeration value="left"/>

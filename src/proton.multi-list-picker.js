@@ -18,7 +18,7 @@
             controllerAs: "controller",
             scope: {},
             transclude: true,
-            controller: function ProtonMultiListPickerController($scope) {
+            controller: ["$scope", function ProtonMultiListPickerController($scope) {
                 $scope.items = [];
                 this.addDivider = function (divider) {
                     $scope.items.push({
@@ -31,7 +31,7 @@
                     }
                     $scope.items.push(item);
                 };
-            },
+            }],
             link: function ($scope, $element, $attrs, ngModel) {
                 var controller = $scope.controller;
                 var parentScope = $element.parent().scope();
@@ -101,12 +101,12 @@
             },
             restrict: "E",
             require: "^protonMultiListPicker",
-            controller: function ProtonMultiListPickerListController($scope) {
+            controller: ["$scope", function ProtonMultiListPickerListController($scope) {
                 $scope.items = [];
                 this.add = function (item) {
                     $scope.items.push(item);
                 };
-            },
+            }],
             link: function ($scope, $element, $attrs, parent) {
                 parent.add({
                     source: function () {
