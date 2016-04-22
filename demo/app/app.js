@@ -17,11 +17,24 @@ module.controller("MainController", function ($scope) {
         month: 2,
         day: 13
     };
-    var result = [];
     $scope.getYears = function () {
-        result.length = 0;
-        for (var i = 0; i < 1; i ++) {
+        var result = [];
+        for (var i = 0; i < 100; i ++) {
             result.push(1950 + i);
+        }
+        return result;
+    };
+    $scope.getDays = function (year, month) {
+        var result = [];
+        for (var i = 1; i < 30; i ++) {
+            result.push(i);
+        }
+        return result;
+    };
+    $scope.getMinutes = function () {
+        var result = {};
+        for (var i = 0; i < 60; i ++) {
+            result[i] = i < 10 ? ("0" + i) : i;
         }
         return result;
     };
