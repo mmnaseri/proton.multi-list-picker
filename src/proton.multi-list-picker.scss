@@ -93,6 +93,17 @@
 
       }
 
+      .divider {
+        & {
+          display: block;
+          padding: 0 1rem 0 0.3rem;
+          margin: 0;
+          position: relative;
+          top: -5.1rem;
+          opacity: 0.5;
+        }
+      }
+
     }
 
   }

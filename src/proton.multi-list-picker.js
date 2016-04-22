@@ -8,9 +8,9 @@
     };
     var module = angular.module('proton.multi-list-picker', []);
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\' mn-touch data-swipe-up=\'swipeUp($event)\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li ng-repeat=\'list in items track by $index\' class=\'list-container\'>\n            <span class=\'divider\' ng-if=\'list.$divider\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.$divider\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.$divider\'></span>\n            </span>\n            <ul class=\'list\' ng-if=\'!list.$divider\' ng-init=\'cached = (list.source() | protonMultiListArrayOf); selectedIndex = selected(list.alias, cached); view = (cached | protonMultiListView:selectedIndex);\'>\n                <li class=\'item {{item.index == selectedIndex ? \"selected\" : \"offset-\" + ($index &gt; 3 ? $index - 3 : 3 - $index)}}\' ng-repeat=\'item in view track by $index\'>\n                    <span ng-if=\'!bindHtml\' ng-bind=\'item.label\'></span>\n                    <span ng-if=\'bindHtml\' ng-bind-html=\'item.label\'></span>\n                </li>\n            </ul>\n        </li>\n    </ul>\n    <div class=\'after\'></div>\n</div>");
+        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\' mn-touch data-swipe-up=\'swipe($event)\' data-swipe-down=\'swipe($event)\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li ng-repeat=\'list in items track by $index\' class=\'list-container\' data-index=\'{{$index}}\'>\n            <span class=\'divider\' ng-if=\'list.$divider\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.$divider\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.$divider\'></span>\n            </span>\n            <ul class=\'list\' ng-if=\'!list.$divider\'>\n                <li class=\'item {{item.index == list.selected ? \"selected\" : \"offset-\" + ($index &gt; 3 ? $index - 3 : 3 - $index)}}\' ng-repeat=\'item in list.view track by $index\' mn-touch data-secure-tap=\'select(list, item.index)\'>\n                    <span ng-if=\'!bindHtml\' ng-bind=\'item.label\'></span>\n                    <span ng-if=\'bindHtml\' ng-bind-html=\'item.label\'></span>\n                </li>\n            </ul>\n        </li>\n    </ul>\n    <div class=\'after\'></div>\n</div>");
     }]);
-    module.directive('protonMultiListPicker', ["$parse", "$filter", function ($parse, $filter) {
+    module.directive('protonMultiListPicker', ["$parse", "$filter", "$timeout", function ($parse, $filter, $timeout) {
         var controller = function ProtonMultiListPickerController($scope) {
             $scope.items = [];
             this.addDivider = function (divider) {
@@ -51,12 +51,16 @@
                 }, function (model) {
                     $scope.model = model;
                     angular.forEach($scope.items, function (list) {
-                        if (!list.alias) {
+                        if (list.$divider) {
                             return;
                         }
+                        var selected;
                         if (angular.isUndefined(model[list.alias])) {
-                            $scope.select(list.alias, $filter("protonMultiListArrayOf")(list.source()), 0);
+                            selected = 0;
+                        } else {
+                            selected = $scope.selected(list.alias, $filter("protonMultiListArrayOf")(list.source()));
                         }
+                        $scope.select(list, selected);
                     });
                 }, true);
                 $scope.value = function (list, index) {
@@ -65,8 +69,11 @@
                     }
                     return list[index].value;
                 };
-                $scope.select = function (property, list, index) {
-                    $scope.model[property] = $scope.value(list, index);
+                $scope.select = function (descriptor, index) {
+                    descriptor.selected = index;
+                    descriptor.array = $filter("protonMultiListArrayOf")(descriptor.source());
+                    descriptor.view = $filter("protonMultiListView")(descriptor.array, index);
+                    $scope.model[descriptor.alias] = $scope.value(descriptor.array, index);
                 };
                 $scope.selected = function (property, list) {
                     var selection = $scope.model[property];
@@ -84,8 +91,39 @@
                     });
                     return index > -1 ? index : 0;
                 };
-                $scope.swipeUp = function (event) {
-                    console.log("UP", event);
+                $scope.swipe = function (event) {
+                    var listElement = angular.element(event.events.start.target);
+                    while (listElement.length && !listElement.hasClass('list-container')) {
+                        listElement = listElement.parent();
+                    }
+                    if (!listElement.length) {
+                        return;
+                    }
+                    var listIndex = listElement.attr('data-index');
+                    var list = $scope.items[listIndex];
+                    var count = Math.max(1, Math.abs(Math.floor(event.directionY / 40)));
+                    var cached = $filter("protonMultiListArrayOf")(list.source());
+                    var selected = $scope.selected(list.alias, cached);
+                    (function advance(delay) {
+                        $timeout(function () {
+                            if (event.directionY < 0) {
+                                selected ++;
+                                if (selected == cached.length) {
+                                    selected = 0;
+                                }
+                            } else {
+                                selected --;
+                                if (selected < 0) {
+                                    selected = cached.length - 1;
+                                }
+                            }
+                            $scope.select(list, selected);
+                            count --;
+                            if (count > 0) {
+                                advance(Math.floor(delay * 1.1));
+                            }
+                        }, delay);
+                    })(200 / count);
                 };
             }
         };
@@ -176,6 +214,7 @@
                 var cursor = items.length - 1;
                 while (pivot < 3) {
                     view.splice(0, 0, items[cursor]);
+                    items[cursor].index = cursor;
                     cursor --;
                     if (cursor < 0) {
                         cursor = items.length - 1;
@@ -185,6 +224,7 @@
                 cursor = 0;
                 while (view.length < 7) {
                     view.push(items[cursor]);
+                    items[cursor].index = cursor;
                     cursor ++;
                     if (cursor == items.length) {
                         cursor = 0;
