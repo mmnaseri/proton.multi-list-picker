@@ -5,7 +5,7 @@
     font-size: 1rem;
     font-family: "Helvetica Neue", Helvetica, "Open Sans", sans-serif;
     font-weight: 200;
-    height: 7.8rem;
+    height: 7.4rem;
     overflow: hidden;
     border: 1px solid #f8f8f8;
     text-outline: none;
@@ -34,6 +34,7 @@
 
       & {
         display: inline-block;
+        vertical-align: top;
         margin: 0;
         padding: 0;
       }
@@ -45,7 +46,7 @@
           padding: 0;
           margin: 0;
           position: relative;
-          top: -1rem;
+          top: -1.8rem;
         }
 
         .item {
@@ -59,6 +60,8 @@
           }
 
           &.selected {
+            margin-top: 0.4rem;
+            margin-bottom: 0.4rem;
             font-weight: 400;
           }
 
@@ -73,11 +76,11 @@
 
           &.offset-2 {
             opacity: 0.5;
-            transform : scale(1,0.8);
-            -webkit-transform:scale(1,0.8); /* Safari and Chrome */
-            -moz-transform:scale(1,0.8); /* Firefox */
-            -ms-transform:scale(1,0.8); /* IE 9+ */
-            -o-transform:scale(1,0.8); /* Opera */
+            transform : scale(0.95,0.6);
+            -webkit-transform:scale(0.95,0.6); /* Safari and Chrome */
+            -moz-transform:scale(0.95,0.6); /* Firefox */
+            -ms-transform:scale(0.95,0.6); /* IE 9+ */
+            -o-transform:scale(0.95,0.6); /* Opera */
           }
 
           &.offset-3 {
@@ -108,13 +111,14 @@
 
   }
 
-  .after {
+  .before {
     display: block;
     height: 1.4rem;
     border-top: 1px solid #d6d6d6;
     border-bottom: 1px solid #d6d6d6;
     position: relative;
-    top: -6.5rem;
+    top: 3rem;
+    margin-bottom: -1.4rem;
   }
 
 }

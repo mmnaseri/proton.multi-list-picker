@@ -8,7 +8,7 @@
     };
     var module = angular.module('proton.multi-list-picker', []);
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\' mn-touch data-swipe-up=\'swipe($event)\' data-swipe-down=\'swipe($event)\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li ng-repeat=\'list in items track by $index\' class=\'list-container\' data-index=\'{{$index}}\'>\n            <span class=\'divider\' ng-if=\'list.$divider\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.$divider\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.$divider\'></span>\n            </span>\n            <ul class=\'list\' ng-if=\'!list.$divider\'>\n                <li class=\'item {{item.index == list.selected ? \"selected\" : \"offset-\" + ($index &gt; 3 ? $index - 3 : 3 - $index)}}\' ng-repeat=\'item in list.view track by $index\' mn-touch data-secure-tap=\'select(list, item.index)\'>\n                    <span ng-if=\'!bindHtml\' ng-bind=\'item.label\'></span>\n                    <span ng-if=\'bindHtml\' ng-bind-html=\'item.label\'></span>\n                </li>\n            </ul>\n        </li>\n    </ul>\n    <div class=\'after\'></div>\n</div>");
+        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'first\'></div>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li ng-repeat=\'list in items track by $index\' class=\'list-container\' data-index=\'{{$index}}\'>\n            <span class=\'divider\' ng-if=\'list.$divider\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.$divider\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.$divider\'></span>\n            </span>\n            <ul class=\'list\' ng-if=\'!list.$divider\' proton-multi-list-motion data-start=\'testStart($event)\' data-move=\'testStart($event)\' data-end=\'testStart($event)\'>\n                <li class=\'item {{$index == 3 ? \"selected\" : \"offset-\" + ($index &gt; 3 ? $index - 3 : 3 - $index)}}\' ng-repeat=\'item in list.array track by $index\'>\n                    <span ng-if=\'!bindHtml\' ng-bind=\'item.label\'></span>\n                    <span ng-if=\'bindHtml\' ng-bind-html=\'item.label\'></span>\n                </li>\n            </ul>\n        </li>\n    </ul>\n    <div class=\'after\'></div>\n    <div class=\'last\'></div>\n</div>");
     }]);
     module.directive('protonMultiListPicker', ["$parse", "$filter", "$timeout", function ($parse, $filter, $timeout) {
         var controller = function ProtonMultiListPickerController($scope) {
@@ -22,7 +22,13 @@
                 if (!item.alias) {
                     item.alias = $scope.items.length;
                 }
+                item.index = $scope.items.length;
                 $scope.items.push(item);
+                $scope.$watch(function () {
+                    return item.source();
+                }, function () {
+                    $scope.$broadcast('protonMultiListPicker:changed', item);
+                }, true);
             };
         };
         return {
@@ -30,100 +36,93 @@
             replace: true,
             templateUrl: templates.picker,
             require: "?ngModel",
-            controllerAs: "controller",
             scope: {},
             transclude: true,
             controller: ["$scope", controller],
-            link: function ($scope, $element, $attrs, ngModel) {
-                var controller = $scope.controller;
+            link: function ($scope, $element, $attrs) {
                 var parentScope = $element.parent().scope();
-                $scope.attachment = "bottom";
-                $attrs.$observe("attachment", function (attachment) {
-                    $scope.attachment = attachment || "bottom";
-                });
-                $scope.bindHtml = false;
-                $attrs.$observe("bindHtml", function (bindHtml) {
-                    $scope.bindHtml = bindHtml == "true";
-                });
-                $scope.model = null;
                 $scope.$watch(function () {
                     return $parse($attrs.ngModel)(parentScope);
                 }, function (model) {
                     $scope.model = model;
+                    $scope.$broadcast('protonMultiListPicker:changed', model);
+                });
+                $attrs.$observe("bindHtml", function (value) {
+                    $scope.bindHtml = value == "true";
+                });
+                $scope.$on('protonMultiListPicker:changed', function () {
+                    //we need to convert the values, so that the given items are all lists of {label,value}s.
                     angular.forEach($scope.items, function (list) {
-                        if (list.$divider) {
+                        if (angular.isDefined(list.$divider)) {
                             return;
                         }
-                        var selected;
-                        if (angular.isUndefined(model[list.alias])) {
-                            selected = 0;
-                        } else {
-                            selected = $scope.selected(list.alias, $filter("protonMultiListArrayOf")(list.source()));
-                        }
-                        $scope.select(list, selected);
-                    });
-                }, true);
-                $scope.value = function (list, index) {
-                    if (list.index <= index || index < 0) {
-                        return null;
-                    }
-                    return list[index].value;
-                };
-                $scope.select = function (descriptor, index) {
-                    descriptor.selected = index;
-                    descriptor.array = $filter("protonMultiListArrayOf")(descriptor.source());
-                    descriptor.view = $filter("protonMultiListView")(descriptor.array, index);
-                    $scope.model[descriptor.alias] = $scope.value(descriptor.array, index);
-                };
-                $scope.selected = function (property, list) {
-                    var selection = $scope.model[property];
-                    var index = -1;
-                    angular.forEach(list, function (item, cursor) {
-                        if (index > -1) {
-                            return;
-                        }
-                        if (angular.isObject(item) && angular.isDefined(item.value) && selection == item.value) {
-                            index = cursor;
-                        }
-                        if ((!angular.isObject(item) || !angular.isDefined(item.value)) && selection == item) {
-                            index = cursor;
-                        }
-                    });
-                    return index > -1 ? index : 0;
-                };
-                $scope.swipe = function (event) {
-                    var listElement = angular.element(event.events.start.target);
-                    while (listElement.length && !listElement.hasClass('list-container')) {
-                        listElement = listElement.parent();
-                    }
-                    if (!listElement.length) {
-                        return;
-                    }
-                    var listIndex = listElement.attr('data-index');
-                    var list = $scope.items[listIndex];
-                    var count = Math.max(1, Math.abs(Math.floor(event.directionY / 40)));
-                    var cached = $filter("protonMultiListArrayOf")(list.source());
-                    var selected = $scope.selected(list.alias, cached);
-                    (function advance(delay) {
-                        $timeout(function () {
-                            if (event.directionY < 0) {
-                                selected ++;
-                                if (selected == cached.length) {
-                                    selected = 0;
-                                }
+                        var source = angular.copy(list.source());
+                        var result;
+                        if (!angular.isArray(source)) {
+                            result = [];
+                            if (angular.isObject(source)) {
+                                angular.forEach(source, function (value, property) {
+                                    result.push({
+                                        label: value,
+                                        value: property
+                                    });
+                                });
                             } else {
-                                selected --;
-                                if (selected < 0) {
-                                    selected = cached.length - 1;
+                                result.push({
+                                    label: source,
+                                    value: source
+                                });
+                            }
+                        } else {
+                            result = source;
+                        }
+                        source = result;
+                        result = [];
+                        angular.forEach(source, function (item, index) {
+                            item.index = index;
+                            if (angular.isObject(item) && angular.isDefined(item.label) && angular.isDefined(item.value)) {
+                                result.push(item);
+                            } else {
+                                result.push({
+                                    label: item,
+                                    value: item
+                                });
+                            }
+                        });
+                        list.array = result;
+                        list.selected = 0;
+                    });
+                    if (angular.isObject($scope.model)) {
+                        //first, let's see if the model has all the required properties
+                        angular.forEach($scope.items, function (list) {
+                            if (list.$divider) {
+                                return;
+                            }
+                            if (angular.isUndefined($scope.model[list.alias])) {
+                                $scope.model[list.alias] = list.array[0].value;
+                            }
+                        });
+                        //now, let's figure out which one is selected
+                        angular.forEach($scope.items, function (list) {
+                            if (list.$divider) {
+                                return;
+                            }
+                            list.selected = -1;
+                            angular.forEach(list.array, function (item, index) {
+                                if (list.selected > -1) {
+                                    return;
                                 }
-                            }
-                            $scope.select(list, selected);
-                            count --;
-                            if (count > 0) {
-                                advance(Math.floor(delay * 1.1));
-                            }
-                        }, delay);
-                    })(200 / count);
+                                if (item.value == $scope.model[list.alias]) {
+                                    list.selected = index;
+                                }
+                            });
+                        });
+                    }
+                });
+                $scope.select = function (list, index) {
+                    if (angular.isObject($scope.model)) {
+                        $scope.model[list.alias] = list.array[index].value;
+                    }
                 };
             }
         };
@@ -138,7 +137,8 @@
         return {
             scope: {
                 source: "&?",
-                alias: "@?"
+                alias: "@?",
+                cycle: "@?"
             },
             restrict: "E",
             require: "^protonMultiListPicker",
@@ -148,7 +148,8 @@
                     source: function () {
                         return $scope.source && $scope.source() || $scope.items;
                     },
-                    alias: $scope.alias
+                    alias: $scope.alias,
+                    cycle: $scope.cycle == "true"
                 });
             }
         };
@@ -215,17 +216,17 @@
                 while (pivot < 3) {
                     view.splice(0, 0, items[cursor]);
                     items[cursor].index = cursor;
-                    cursor --;
+                    cursor--;
                     if (cursor < 0) {
                         cursor = items.length - 1;
                     }
-                    pivot ++;
+                    pivot++;
                 }
                 cursor = 0;
                 while (view.length < 7) {
                     view.push(items[cursor]);
                     items[cursor].index = cursor;
-                    cursor ++;
+                    cursor++;
                     if (cursor == items.length) {
                         cursor = 0;
                     }
@@ -266,5 +267,149 @@
                 return [items];
             }
         }
+    }]);
+    module.service('protonMultiListMomentum', [function () {
+        var details = function (event) {
+            return {
+                event: event,
+                type: event.touches ? "Touch" : "Mouse",
+                x: event.touches ? event.touches[0].screenX : event.screenX,
+                y: event.touches ? event.touches[0].screenY : event.screenY,
+                target: event.touches ? event.touches[0].target : event.target,
+                timestamp: Date.now(),
+                xDisplacement: 0,
+                yDisplacement: 0,
+                speedX: 0,
+                speedY: 0,
+                speedXState: 'stopped',
+                speedYState: 'stopped',
+                accelerationX: 0,
+                accelerationY: 0,
+                speed: 0,
+                acceleration: 0,
+                angle: NaN,
+                origin: coordinates ? (coordinates.origin ? coordinates.origin : coordinates) : null
+            };
+        };
+        var coordinates = null;
+        this.start = function (event, callback) {
+            if (event.touches && event.touches.length > 1) {
+                return;
+            }
+            coordinates = details(event);
+            if (angular.isFunction(callback)) {
+                callback(coordinates);
+            }
+        };
+        this.move = function (event, callback) {
+            if (coordinates === null) {
+                return;
+            }
+            var newCoordinates = details(event);
+            var timeDifference = newCoordinates.timestamp - coordinates.timestamp;
+            var xDifference = newCoordinates.x - coordinates.x;
+            var yDifference = newCoordinates.y - coordinates.y;
+            newCoordinates.xDisplacement = xDifference;
+            newCoordinates.yDisplacement = yDifference;
+            newCoordinates.angle = Math.atan2(newCoordinates.x, newCoordinates.y);
+            if (timeDifference == 0) {
+                if (xDifference == 0) {
+                    newCoordinates.speedX = 0;
+                    newCoordinates.speedXState = 'stopped';
+                } else {
+                    newCoordinates.speedX = Math.sign(xDifference) * Infinity;
+                    newCoordinates.speedXState = 'fast';
+                }
+                if (yDifference == 0) {
+                    newCoordinates.speedY = 0;
+                    newCoordinates.speedYState = 'stopped';
+                } else {
+                    newCoordinates.speedY = Math.sign(yDifference) * Infinity;
+                    newCoordinates.speedYState = 'fast';
+                }
+            } else {
+                newCoordinates.speedX = xDifference / timeDifference;
+                newCoordinates.speedY = yDifference / timeDifference;
+                if (Math.abs(newCoordinates.speedX) < 0.2) {
+                    newCoordinates.speedXState = 'slow';
+                } else if (Math.abs(newCoordinates.speedX) < 0.6) {
+                    newCoordinates.speedXState = 'moderate';
+                } else {
+                    newCoordinates.speedXState = 'fast';
+                }
+                if (Math.abs(newCoordinates.speedY) < 0.2) {
+                    newCoordinates.speedYState = 'slow';
+                } else if (Math.abs(newCoordinates.speedY) < 0.6) {
+                    newCoordinates.speedYState = 'moderate';
+                } else {
+                    newCoordinates.speedYState = 'fast';
+                }
+            }
+            var speedXDifference = newCoordinates.speedX - coordinates.speedX;
+            var speedYDifference = newCoordinates.speedY - coordinates.speedY;
+            if (timeDifference == 0) {
+                if (speedXDifference == 0) {
+                    newCoordinates.accelerationX = 0;
+                } else {
+                    newCoordinates.accelerationX = Math.sign(speedXDifference) * Infinity;
+                }
+                if (speedYDifference == 0) {
+                    newCoordinates.accelerationY = 0;
+                } else {
+                    newCoordinates.accelerationY = Math.sign(speedYDifference) * Infinity;
+                }
+            } else {
+                newCoordinates.accelerationX = speedXDifference / timeDifference;
+                newCoordinates.accelerationY = speedYDifference / timeDifference;
+            }
+            newCoordinates.speed = Math.sqrt(Math.pow(newCoordinates.speedX, 2) + Math.pow(newCoordinates.speedY, 2));
+            newCoordinates.acceleration = Math.sqrt(Math.pow(newCoordinates.accelerationX, 2) + Math.pow(newCoordinates.accelerationY, 2));
+            coordinates = newCoordinates;
+            if (angular.isFunction(callback)) {
+                callback(coordinates);
+            }
+        };
+        this.end = function (event, callback) {
+            if (coordinates === null) {
+                return;
+            }
+            if (angular.isFunction(callback)) {
+                callback(coordinates);
+            }
+            coordinates = null;
+        };
+    }]);
+    module.directive('protonMultiListMotion', ["protonMultiListMomentum", function (protonMultiListMomentum) {
+        return {
+            restrict: "A",
+            scope: {
+                move: "&?move",
+                end: "&?end",
+                start: "&?start"
+            },
+            link: function ($scope, $element) {
+                $element.on("mousedown touchstart", function (event) {
+                    protonMultiListMomentum.start(event, function (event) {
+                        $scope.start && $scope.start({
+                            $event: event
+                        });
+                    });
+                });
+                $element.on("mousemove touchmove", function (event) {
+                    protonMultiListMomentum.move(event, function (event) {
+                        $scope.move && $scope.move({
+                            $event: event
+                        });
+                    });
+                });
+                $element.on("mouseup touchend touchcancel", function (event) {
+                    protonMultiListMomentum.end(event, function (event) {
+                        $scope.end && $scope.end({
+                            $event: event
+                        });
+                    });
+                });
+            }
+        };
     }]);
 })();

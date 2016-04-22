@@ -7,16 +7,18 @@
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="../bower_components/mn-touch/mn-touch.js"></script>
-    <script src="../dist/proton.multi-list-picker.min.js"></script>
+    <script src="../src/proton.multi-list-picker.js"></script>
     <script src="app/app.js"></script>
     <script type="application/javascript" src="http://localhost:13001/livereload.js"></script>
     <style>
-        body {
-            font-size: 20px;
+        html {
+            font-size: 15px;
         }
     </style>
 </head>
 <body ng-controller="MainController">
+<input type="text" ng-model="pivotYear" />
+<input type="text" ng-model="model.year" />
 <pre ng-bind="model | json"></pre>
 <input type="text" disabled value="{{model.month}}/{{model.day}}/{{model.year}}, {{model.hour}}:{{model.minute}} {{model.time}}" />
 <proton:multi-list-picker ng-model="model" attachment="bottom" bind-html="true">

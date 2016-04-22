@@ -17,16 +17,17 @@
     });
 
     module.controller("MainController", function ($scope) {
+        $scope.pivotYear = 2000;
         $scope.model = {
-            year: 2000,
+            year: $scope.pivotYear,
             month: 2,
             day: 4,
             time: "01"
         };
         $scope.getYears = function () {
             var result = [];
-            for (var i = 0; i < 100; i ++) {
-                result.push(1950 + i);
+            for (var i = $scope.pivotYear - 50; i < $scope.pivotYear + 50; i ++) {
+                result.push(i);
             }
             return result;
         };

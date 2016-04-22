@@ -61,6 +61,12 @@
                 is provided, we will expect to see a list of <code>protonMultiListPickerListItem</code>s.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="cycle" type="xs:boolean" use="optional" default="false">
+            <xs:annotation>
+                <xs:documentation source="description">Whether or not the values of this list should form a cycle
+                and create a continuous scroll effect</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:simpleType name="ComponentAttachment">

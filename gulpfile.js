@@ -5,6 +5,7 @@
 
 //Gulp main
 var gulp = require("gulp");
+var gutil = require("gulp-util");
 var uglify = require("gulp-uglify");
 var del = require("del");
 var copy = require("gulp-copy");
