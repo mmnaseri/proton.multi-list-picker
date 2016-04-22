@@ -21,7 +21,7 @@
         $scope.data = {
             model: {
                 year: 1953,
-                month: 3,
+                month: 11,
                 day: 4,
                 minute: 3,
                 hour: 3
