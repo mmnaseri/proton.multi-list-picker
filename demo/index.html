@@ -5,31 +5,32 @@
     <title>Demo</title>
     <link rel="stylesheet" href="../dist/proton.multi-list-picker.css">
     <script src="../bower_components/angular/angular.js"></script>
-    <script src="../src/proton.multi-list-picker.js"></script>
+    <script src="../dist/proton.multi-list-picker.min.js"></script>
     <script src="app/app.js"></script>
     <script type="application/javascript" src="http://localhost:13001/livereload.js"></script>
 </head>
 <body ng-controller="MainController">
+<pre ng-bind="model | json"></pre>
 <proton:multi-list-picker ng-model="model" attachment="bottom">
     <proton:multi-list-picker-list alias="year" source="getYears()">
     </proton:multi-list-picker-list>
     <proton:multi-list-picker-list alias="month">
-        <proton:multi-list-picker-list-item value="1"><strong>January</strong></proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="2">February</proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="3">March</proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="4">April</proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="5">May</proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="6">June</proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="7">July</proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="8">August</proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="9">September</proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="10">October</proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="11">November</proton:multi-list-picker-list-item>
-        <proton:multi-list-picker-list-item value="12">December</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="0"><strong>January</strong></proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="1">February</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="2">March</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="3">April</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="4">May</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="5">June</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="6">July</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="7">August</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="8">September</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="9">October</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="10">November</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-list-item value="11">December</proton:multi-list-picker-list-item>
     </proton:multi-list-picker-list>
     <proton:multi-list-picker-list alias="day" source="getDays(model.year, model.month)">
     </proton:multi-list-picker-list>
-    <proton:multi-list-picker-divider>, </proton:multi-list-picker-divider>
+    <proton:multi-list-picker-divider>,</proton:multi-list-picker-divider>
     <proton:multi-list-picker-list alias="hour">
         <proton:multi-list-picker-list-item>00</proton:multi-list-picker-list-item>
         <proton:multi-list-picker-list-item>01</proton:multi-list-picker-list-item>
@@ -43,6 +44,8 @@
         <proton:multi-list-picker-list-item>09</proton:multi-list-picker-list-item>
         <proton:multi-list-picker-list-item>10</proton:multi-list-picker-list-item>
         <proton:multi-list-picker-list-item>11</proton:multi-list-picker-list-item>
+        <proton:multi-list-picker-divider>
+        </proton:multi-list-picker-divider>
         <proton:multi-list-picker-list-item>12</proton:multi-list-picker-list-item>
         <proton:multi-list-picker-list-item>13</proton:multi-list-picker-list-item>
         <proton:multi-list-picker-list-item>14</proton:multi-list-picker-list-item>

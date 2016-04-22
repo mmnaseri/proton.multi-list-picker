@@ -29,8 +29,8 @@ var paths = {
         "bower_components/*"
     ],
     demo: [
-        "demo/js/**",
-        "demo/css/**",
+        "demo/app/*.js",
+        "demo/css/*.js",
         "demo/index.html"
     ],
     dist: {
