@@ -18,11 +18,14 @@
 
     module.controller("MainController", function ($scope) {
         $scope.pivotYear = 2000;
-        $scope.model = {
-            year: $scope.pivotYear,
-            month: 2,
-            day: 4,
-            time: "01"
+        $scope.data = {
+            model: {
+                year: 1953,
+                month: 3,
+                day: 4,
+                minute: 3,
+                hour: 3
+            }
         };
         $scope.getYears = function () {
             var result = [];
