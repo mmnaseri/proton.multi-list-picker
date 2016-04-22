@@ -1,24 +1,8 @@
-@keyframes moveUp {
-  to {
-    -webkit-transform: translate(0, -1.2rem);
-    -moz-transform: translate(0, -1.2rem);
-    -ms-transform: translate(0, -1.2rem);
-    -o-transform: translate(0, -1.2rem);
-    transform: translate(0, -1.2rem);
-  }
-}
-
-@keyframes moveDown {
-  to {
-    -webkit-transform: translate(0, 1.2rem);
-    -moz-transform: translate(0, 1.2rem);
-    -ms-transform: translate(0, 1.2rem);
-    -o-transform: translate(0, 1.2rem);
-    transform: translate(0, 1.2rem);
-  }
-}
-
 .proton-multi-list-picker {
+
+  .toolbar {
+    display: none;
+  }
 
   & {
     display: block;
@@ -216,6 +200,87 @@
   
   .after-lists {
     display: none;
+
+  }
+
+  &.modal, &.top, &.bottom {
+
+    .toolbar {
+      display: block;
+      position: absolute;
+      height: 1.5rem;
+      background: #e6e6e6;
+      width: 100%;
+      font-size: 0.9rem;
+      line-height: 0.8rem;
+      text-align: right;
+
+      .toolbar-button {
+        display: inline-block;
+        color: #6495ed;
+        font-weight: 500;
+        margin-right: 0.3rem;
+        margin-top: 0.3rem;
+      }
+
+    }
+
+    .before {
+      background: #5a5a5a;
+      opacity: 0.6;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+    }
+    
+    .lists {
+      position: absolute;
+      left: 50%;
+      width: auto;
+      margin-left: -250px; /* Half the width */
+
+      .list, .divider, .divider.blank {
+        background: #ffffff;
+        border-top: 1px solid #ffffff;
+        border-bottom: 1px solid #ffffff;
+      }
+
+    }
+
+  }
+
+  &.top {
+
+    .toolbar {
+      display: block;
+      position: relative;
+      margin-bottom: -1.7rem;
+      top: 7.4rem;
+    }
+
+    .lists {
+      top: 0;
+    }
+  }
+
+  &.bottom {
+
+    .toolbar {
+      top: -1.4rem;
+    }
+
+    .lists {
+      bottom: 0;
+    }
+  }
+
+  &.modal {
+
+    .toolbar {
+      top: -1.4rem;
+    }
 
   }
 

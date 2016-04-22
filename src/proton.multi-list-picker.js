@@ -8,7 +8,7 @@
     };
     var module = angular.module('proton.multi-list-picker', []);
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li class=\'before-lists\' ng-init=\'first = false\'></li>\n        <li ng-repeat=\'list in items track by $index\' class=\'list-container {{$index == 0 || first ? \"first\" : \"\"}} {{$index == items.length - 1 ? \"last\" : \"\"}}\' data-index=\'{{$index}}\' proton-multi-list-motion data-motion-start=\'motionStart($event)\' data-motion-change=\'motionChange($event)\' data-motion-end=\'motionEnd($event)\'>\n            <span class=\'divider {{!list.value ? \"blank\" : \"\"}}\' ng-if=\'list.$divider\' ng-init=\'first = !list.value\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.value\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.value\'></span>\n            </span>\n            <ul class=\'list\' ng-if=\'!list.$divider\' data-selected=\'{{list.selected}}\'>\n                <li class=\'item {{item.index == list.selected ? \"selected\" : \"\"}} {{(!list.cycle && list.selected &lt; 3) ? \"offset-down-\" + (3 - list.selected) : \"\"}} {{(list.cycle ? item.cycleIndex : item.index) &lt; list.selected && (list.cycle ? item.cycleIndex : item.index) &gt;= list.selected - 3 ? \"distance-\" + (list.selected - (list.cycle ? item.cycleIndex : item.index)) : \"\"}} {{(list.cycle ? item.cycleIndex : item.index) &gt; list.selected && (list.cycle ? item.cycleIndex : item.index) &lt;= list.selected + 3 ? \"distance-\" + ((list.cycle ? item.cycleIndex : item.index) - list.selected) : \"\"}}\' ng-repeat=\'item in list.view track by $index\' data-index=\'{{item.index}}\' ng-click=\'select(list, item.index)\' style=\'width: {{list.width}}px;\'>\n                    <span ng-if=\'item.$placeholder\'></span>\n                    <span ng-if=\'!item.$placeholder && !bindHtml\' ng-bind=\'item.label\'></span>\n                    <span ng-if=\'!item.$placeholder && bindHtml\' ng-bind-html=\'item.label\'></span>\n                </li>\n            </ul>\n        </li>\n        <li class=\'after-lists\'></li>\n    </ul>\n    <div class=\'after\'></div>\n</div>");
+        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li class=\'toolbar\'>\n            <a class=\'toolbar-button\'>Done</a>\n        </li>\n        <li class=\'before-lists\' ng-init=\'first = false\'></li>\n        <li ng-repeat=\'list in items track by $index\' class=\'list-container {{$index == 0 || first ? \"first\" : \"\"}} {{$index == items.length - 1 ? \"last\" : \"\"}}\' data-index=\'{{$index}}\' proton-multi-list-motion data-motion-start=\'motionStart($event)\' data-motion-change=\'motionChange($event)\' data-motion-end=\'motionEnd($event)\'>\n            <span class=\'divider {{!list.value ? \"blank\" : \"\"}}\' ng-if=\'list.$divider\' ng-init=\'first = !list.value\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.value\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.value\'></span>\n            </span>\n            <ul class=\'list\' ng-if=\'!list.$divider\' data-selected=\'{{list.selected}}\'>\n                <li class=\'item {{item.index == list.selected ? \"selected\" : \"\"}} {{(!list.cycle && list.selected &lt; 3) ? \"offset-down-\" + (3 - list.selected) : \"\"}} {{(list.cycle ? item.cycleIndex : item.index) &lt; list.selected && (list.cycle ? item.cycleIndex : item.index) &gt;= list.selected - 3 ? \"distance-\" + (list.selected - (list.cycle ? item.cycleIndex : item.index)) : \"\"}} {{(list.cycle ? item.cycleIndex : item.index) &gt; list.selected && (list.cycle ? item.cycleIndex : item.index) &lt;= list.selected + 3 ? \"distance-\" + ((list.cycle ? item.cycleIndex : item.index) - list.selected) : \"\"}}\' ng-repeat=\'item in list.view track by $index\' data-index=\'{{item.index}}\' ng-click=\'select(list, item.index)\' style=\'width: {{list.width}}px;\'>\n                    <span ng-if=\'item.$placeholder\'></span>\n                    <span ng-if=\'!item.$placeholder && !bindHtml\' ng-bind=\'item.label\'></span>\n                    <span ng-if=\'!item.$placeholder && bindHtml\' ng-bind-html=\'item.label\'></span>\n                </li>\n            </ul>\n        </li>\n        <li class=\'after-lists\'></li>\n    </ul>\n    <div class=\'after\'></div>\n</div>");
     }]);
     module.directive('protonMultiListPicker', ["$parse", "$timeout", function ($parse, $timeout) {
         var controller = function ProtonMultiListPickerController($scope) {
@@ -197,7 +197,6 @@
                     var $list;
                     var next = function () {
                         list.selected++;
-                        // $list.addClass('one-up');
                         if (list.selected == list.array.length) {
                             if (list.cycle) {
                                 list.selected = 0;
@@ -207,7 +206,6 @@
                         }
                     };
                     var previous = function () {
-                        // $list.addClass('one-down');
                         list.selected--;
                         if (list.selected < 0) {
                             if (list.cycle) {
@@ -218,21 +216,13 @@
                         }
                     };
                     function setSelection(event) {
-                        // $list.addClass('transitioning');
-                        // $list.removeClass('one-up');
-                        // $list.removeClass('one-down');
                         var direction = -1 * Math.sign(event.speedY);
                         if (direction < 0) {
                             previous();
                         } else {
                             next();
                         }
-                        $timeout(function () {
-                            // $list.removeClass('one-up');
-                            // $list.removeClass('one-down');
-                            // $list.removeClass('transitioning');
-                            $scope.select(list, list.selected);
-                        }, 0);
+                        $scope.select(list, list.selected);
                     }
                     var listElement = function (e) {
                         var element = angular.element(e);
@@ -255,6 +245,9 @@
                         }
                         var last = event.last();
                         element = element.getElementsByTagName('li')[0];
+                        if (!element) {
+                            return;
+                        }
                         var threshold = element.offsetHeight;
                         if (Math.abs(last.y - event.y) >= threshold) {
                             event.checkpoint();
@@ -264,6 +257,9 @@
                         setSelection(event);
                     };
                     $scope.motionEnd = function (event) {
+                        if (!$list || !$list.length) {
+                            return;
+                        }
                         event.slowDown(0.0001, Math.min(Math.floor(Math.abs(event.speedY) / 0.3), 8), function () {
                             setSelection(event);
                         });

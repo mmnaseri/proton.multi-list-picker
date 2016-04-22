@@ -23,7 +23,7 @@
 <input type="text" ng-model="data.model.year" />
 <pre ng-bind="data.model | json"></pre>
 <input type="text" disabled value="{{data.model.month + 1}}/{{data.model.day}}/{{data.model.year}}, {{data.model.hour}}:{{data.model.minute}} {{data.model.time}}" />
-<proton:multi-list-picker ng-model="data.model" attachment="bottom" bind-html="true">
+<proton:multi-list-picker ng-model="data.model" attachment="modal" bind-html="true">
     <proton:multi-list-picker-list alias="year" source="getYears()">
     </proton:multi-list-picker-list>
     <proton:multi-list-picker-list alias="month" cycle="true">

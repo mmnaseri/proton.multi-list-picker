@@ -78,8 +78,6 @@
                     <li><code>inline</code>: the component will be displayed as an inline block</li>
                     <li><code>bottom</code>: the component will be affixed to the bottom of the screen</li>
                     <li><code>top</code>: the component will be affixed to the top of the screen</li>
-                    <li><code>left</code>: the component will be affixed to the left side of the screen</li>
-                    <li><code>right</code>: the component will be affixed to the right side of the screen</li>
                 </ul>
             </xs:documentation>
         </xs:annotation>
@@ -88,8 +86,6 @@
             <xs:enumeration value="inline"/>
             <xs:enumeration value="bottom"/>
             <xs:enumeration value="top"/>
-            <xs:enumeration value="left"/>
-            <xs:enumeration value="right"/>
         </xs:restriction>
     </xs:simpleType>
 
