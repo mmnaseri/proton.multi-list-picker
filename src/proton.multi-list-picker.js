@@ -8,7 +8,7 @@
     };
     var module = angular.module('proton.multi-list-picker', []);
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li ng-repeat=\'list in items track by $index\' class=\'list-container\'>\n            <span class=\'divider\' ng-if=\'list.$divider\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.$divider\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.$divider\'></span>\n            </span>\n            <ul class=\'list\' ng-if=\'!list.$divider\' ng-init=\'cached = (list.source() | protonMultiListArrayOf); selectedIndex = selected(list.alias, cached); view = (cached | protonMultiListView:selectedIndex);\'>\n                <li class=\'item {{item.index == selectedIndex ? \"selected\" : \"offset-\" + ($index &gt; 3 ? $index - 3 : 3 - $index)}}\' ng-repeat=\'item in view track by $index\' ng-swipe-up=\'swipeUp()\'>\n                    <span ng-if=\'!bindHtml\' ng-bind=\'item.label\'></span>\n                    <span ng-if=\'bindHtml\' ng-bind-html=\'item.label\'></span>\n                </li>\n            </ul>\n        </li>\n    </ul>\n    <div class=\'after\'></div>\n</div>");
+        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\' mn-touch data-swipe-up=\'swipeUp($event)\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li ng-repeat=\'list in items track by $index\' class=\'list-container\'>\n            <span class=\'divider\' ng-if=\'list.$divider\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.$divider\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.$divider\'></span>\n            </span>\n            <ul class=\'list\' ng-if=\'!list.$divider\' ng-init=\'cached = (list.source() | protonMultiListArrayOf); selectedIndex = selected(list.alias, cached); view = (cached | protonMultiListView:selectedIndex);\'>\n                <li class=\'item {{item.index == selectedIndex ? \"selected\" : \"offset-\" + ($index &gt; 3 ? $index - 3 : 3 - $index)}}\' ng-repeat=\'item in view track by $index\'>\n                    <span ng-if=\'!bindHtml\' ng-bind=\'item.label\'></span>\n                    <span ng-if=\'bindHtml\' ng-bind-html=\'item.label\'></span>\n                </li>\n            </ul>\n        </li>\n    </ul>\n    <div class=\'after\'></div>\n</div>");
     }]);
     module.directive('protonMultiListPicker', ["$parse", "$filter", function ($parse, $filter) {
         var controller = function ProtonMultiListPickerController($scope) {
@@ -84,8 +84,8 @@
                     });
                     return index > -1 ? index : 0;
                 };
-                $scope.swipeUp = function () {
-                    console.log("UP");
+                $scope.swipeUp = function (event) {
+                    console.log("UP", event);
                 };
             }
         };

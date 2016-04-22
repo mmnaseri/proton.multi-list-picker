@@ -7,8 +7,15 @@
     font-weight: 200;
     height: 7.8rem;
     overflow: hidden;
-    border: 1px solid black;
+    border: 1px solid #f8f8f8;
     text-outline: none;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none;   /* Chrome/Safari/Opera */
+    -khtml-user-select: none;    /* Konqueror */
+    -moz-user-select: none;      /* Firefox */
+    -ms-user-select: none;       /* Internet Explorer/Edge */
+    user-select: none;           /* Non-prefixed version, currently
+                                  not supported by any browser */
   }
   
   .proton-multi-list-picker-contents {
@@ -52,6 +59,7 @@
           }
 
           &.selected {
+            font-weight: 400;
           }
 
           &.offset-1 {
@@ -65,20 +73,20 @@
 
           &.offset-2 {
             opacity: 0.5;
-            transform : scale(1,0.85);
-            -webkit-transform:scale(1,0.85); /* Safari and Chrome */
-            -moz-transform:scale(1,0.85); /* Firefox */
-            -ms-transform:scale(1,0.85); /* IE 9+ */
-            -o-transform:scale(1,0.85); /* Opera */
-          }
-
-          &.offset-3 {
-            opacity: 0.3;
             transform : scale(1,0.8);
             -webkit-transform:scale(1,0.8); /* Safari and Chrome */
             -moz-transform:scale(1,0.8); /* Firefox */
             -ms-transform:scale(1,0.8); /* IE 9+ */
             -o-transform:scale(1,0.8); /* Opera */
+          }
+
+          &.offset-3 {
+            opacity: 0.3;
+            transform : scale(1,0.7);
+            -webkit-transform:scale(1,0.7); /* Safari and Chrome */
+            -moz-transform:scale(1,0.7); /* Firefox */
+            -ms-transform:scale(1,0.7); /* IE 9+ */
+            -o-transform:scale(1,0.7); /* Opera */
           }
 
         }
