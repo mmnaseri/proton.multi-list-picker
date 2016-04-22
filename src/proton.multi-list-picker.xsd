@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://github.com/mmnaseri/proton.multi-list-picker"
+           xmlns="http://github.com/mmnaseri/proton.multi-list-picker"
+           elementFormDefault="qualified">
+
+    <xs:element name="multi-list-picker" type="MultiListPicker"/>
+
+    <xs:complexType name="MultiListPicker">
+        <xs:sequence>
+            <xs:choice minOccurs="1" maxOccurs="unbounded">
+                <xs:element type="List" name="multi-list-picker-list"/>
+                <xs:element type="xs:string" name="multi-list-picker-divider"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="ng-model" type="xs:string" use="optional"/>
+        <xs:attribute name="attachment" type="ComponentAttachment" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="List">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="multi-list-picker-list-item" type="ListItem"/>
+                <xs:element type="xs:string" name="multi-list-picker-divider"/>
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="alias" type="xs:string" use="optional"/>
+        <xs:attribute name="source" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <xs:simpleType name="ComponentAttachment">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="modal"/>
+            <xs:enumeration value="bottom"/>
+            <xs:enumeration value="top"/>
+            <xs:enumeration value="left"/>
+            <xs:enumeration value="right"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="ListItem" mixed="true">
+        <xs:sequence>
+            <xs:any minOccurs="0" processContents="skip"/>
+        </xs:sequence>
+        <xs:attribute name="value" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+</xs:schema>
