@@ -1,0 +1,30 @@
+{
+  "name": "proton-multi-list-picker",
+  "description": "Proton: Multi-List Picker",
+  "main": "src/proton.multi-list-picker.js",
+  "authors": [
+    "Milad Naseri <mmnaseri@programmer.net>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "touch",
+    "datepicker",
+    "time",
+    "date",
+    "list",
+    "choice",
+    "select"
+  ],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "angularjs#^1.5.3"
+  }
+}
