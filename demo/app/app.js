@@ -7,7 +7,7 @@
  * @type {angular.Module}
  */
 (function () {
-    var module = angular.module('protonMultiListSelector', ['proton.multi-list-picker', 'ngSanitize', 'mn']);
+    var module = angular.module('protonMultiListSelector', ['proton.multi-list-picker', 'ngSanitize']);
 
     module.run(function () {
         self && self.webView && self.webView.scrollView && (self.webView.scrollView.bounces = NO);
