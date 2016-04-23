@@ -41,6 +41,13 @@ and add a dependency to the parent module to your application:
 
     angular.module('myApplication', [..., 'proton.multi-list-picker']);
 
+Dependencies
+------------
+
+This directive does not have any dependencies whatsoever. The only dependency is
+AngularJS itself, and there is a soft dependency on `ngSanitize` if you need HTML
+captions.
+
 Directives
 ----------
 
