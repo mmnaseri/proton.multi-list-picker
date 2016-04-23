@@ -240,3 +240,9 @@ the SASS file `proton.multi-list-picker.scss` under `src`, or use your own style
 The template for the directive can be loaded via `$templateCache` like this:
 
     var template = $templateCache.get("$/proton/multi-list-picker/picker.html");
+
+License
+-------
+
+This work is distributed under the MIT license, which can be found in `LICENSE.md`
+next to this readme.
