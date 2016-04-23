@@ -25,12 +25,18 @@
                 }
                 item.index = $scope.items.length;
                 $scope.items.push(item);
-                //we need to set up this watch so that any external changes to this list are reflected immediately
-                $scope.$watch(function () {
-                    return item.source();
-                }, function () {
+                var sourceReader = function (value) {
+                    item.cached = value || [];
                     $scope.$broadcast('protonMultiListPicker:changed', item);
-                }, true);
+                };
+                if (item.static) {
+                    sourceReader(item.source());
+                } else {
+                    //we need to set up this watch so that any external changes to this list are reflected immediately
+                    $scope.$watch(function () {
+                        return item.source();
+                    }, sourceReader, true);
+                }
             };
         };
         return {
@@ -65,13 +71,27 @@
                 $attrs.$observe("attachment", function (value) {
                     $scope.attachment = value || "inline";
                 });
+                var cachedLabels = {};
                 $scope.$on('protonMultiListPicker:changed', function () {
+                    //let's see if we can clean up the cache first
+                    angular.forEach(cachedLabels, function (cache, alias) {
+                        var found = false;
+                        angular.forEach($scope.items, function (list) {
+                            found = found || list.alias == alias;
+                        });
+                        if (!found) {
+                            delete cachedLabels[alias];
+                        }
+                    });
                     //we need to convert the values, so that the given items are all lists of {label,value}s.
                     angular.forEach($scope.items, function (list) {
                         if (angular.isDefined(list.$divider)) {
                             return;
                         }
-                        var source = angular.copy(list.source());
+                        if (!angular.isObject(cachedLabels[list.alias])) {
+                            cachedLabels[list.alias] = {};
+                        }
+                        var source = angular.copy(list.cached);
                         var result;
                         if (!angular.isArray(source)) {
                             result = [];
@@ -96,7 +116,6 @@
                         }
                         source = result;
                         result = [];
-                        var longest = 0;
                         angular.forEach(source, function (item, index) {
                             item.index = index;
                             if (angular.isObject(item) && angular.isDefined(item.label) && angular.isDefined(item.value)) {
@@ -107,14 +126,56 @@
                                     value: item
                                 });
                             }
-                            var element = document.createElement("div");
-                            element.innerHTML = String(result[result.length - 1].label);
-                            element.className = "sandbox-item";
-                            element.style.backgroundColor =  "red";
-                            $element.append(element);
-                            longest = Math.max(element.offsetWidth, longest);
-                            element.parentNode.removeChild(element);
+                            result[result.length - 1].label = String(result[result.length - 1].label);
                         });
+                        var needsRefresh = false;
+                        var longest = 0;
+                        var longestText = "";
+                        if (list.strictMatching) {
+                            angular.forEach(result, function (item) {
+                                if (needsRefresh || !angular.isDefined(cachedLabels[list.alias][item.label])) {
+                                    needsRefresh = true;
+                                }
+                            });
+                        } else {
+                            angular.forEach(result, function (item) {
+                                if (needsRefresh) {
+                                    return;
+                                }
+                                var strippedLabel = item.label.replace(/<[^>]+>/g, "");
+                                if (!angular.isDefined(cachedLabels[list.alias][item.label]) && cachedLabels[list.alias].$$longestText && cachedLabels[list.alias].$$longestText.length < strippedLabel.length) {
+                                    needsRefresh = true;
+                                }
+                            });
+                            if (!needsRefresh) {
+                                cachedLabels[list.alias] = {};
+                                angular.forEach(result, function (item) {
+                                    cachedLabels[list.alias][item.label] = true;
+                                });
+                            }
+                        }
+                        if (needsRefresh) {
+                            cachedLabels[list.alias] = {};
+                            //let's figure out the length of the texts
+                            angular.forEach(result, function (item) {
+                                var label = item.label;
+                                cachedLabels[list.alias][label] = true;
+                                var strippedLabel = label.replace(/<[^>]+>/g, "");
+                                if (strippedLabel.length > longestText.length) {
+                                    longestText = strippedLabel;
+                                    var element = document.createElement("div");
+                                    element.innerHTML = label;
+                                    element.className = "sandbox-item";
+                                    element.style.backgroundColor = "red";
+                                    $element.append(element);
+                                    longest = Math.max(element.offsetWidth, longest);
+                                    element.parentNode.removeChild(element);
+                                }
+                            });
+                        } else {
+                            longest = list.width;
+                        }
+                        cachedLabels[list.alias].$$longestText = longestText;
                         list.width = longest;
                         list.array = result;
                         list.selected = 0;
@@ -126,7 +187,7 @@
                                 return;
                             }
                             if (angular.isUndefined($scope.model[list.alias])) {
-                                $scope.model[list.alias] = list.array[0].value;
+                                $scope.model[list.alias] = list.array.length ? list.array[0].value : null;
                             }
                         });
                         //now, let's figure out which one is selected
@@ -145,7 +206,7 @@
                             });
                             if (list.selected == -1) {
                                 //if the current selection is invalid, we will choose the first
-                                $scope.model[list.alias] = list.array[0].value;
+                                $scope.model[list.alias] = list.array.length ? list.array[0].value : null;
                                 list.selected = 0;
                             }
                             $scope.$broadcast('protonMultiListPicker:selected', list);
@@ -271,7 +332,7 @@
                 })();
                 $scope.select = function (list, index) {
                     if (angular.isObject($scope.model)) {
-                        $scope.model[list.alias] = list.array[index].value;
+                        $scope.model[list.alias] = list.array.length ? list.array[index].value : null;
                         list.selected = index;
                     }
                     $scope.$broadcast('protonMultiListPicker:selected', list);
@@ -289,8 +350,10 @@
         return {
             scope: {
                 source: "&?",
+                static: '@?',
                 alias: "@?",
-                cycle: "@?"
+                cycle: "@?",
+                strictMatching: "@?"
             },
             restrict: "E",
             require: "^protonMultiListPicker",
@@ -298,10 +361,12 @@
             link: function ($scope, $element, $attrs, parent) {
                 parent.add({
                     source: function () {
-                        return $scope.source && $scope.source() || $scope.items;
+                        return $scope.source ? $scope.source() : $scope.items;
                     },
                     alias: $scope.alias,
-                    cycle: $scope.cycle == "true"
+                    cycle: $scope.cycle == "true",
+                    static: !$scope.source || $scope.static == "true",
+                    strictMatching: $scope.strictMatching == "true"
                 });
             }
         };

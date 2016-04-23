@@ -22,13 +22,17 @@
         };
         $scope.attachment = "inline";
         $scope.bindHtml = "true";
+        var years = [];
         $scope.getYears = function () {
-            var result = [];
-            for (var i = $scope.pivotYear - 50; i < $scope.pivotYear + 50; i ++) {
-                result.push(i);
-            }
-            return result;
+            return years;
         };
+        $scope.$watch('pivotYear', function (year) {
+            year -= 50;
+            years = [];
+            for (var i = 0; i < 100; i ++) {
+                years.push(year + i);
+            }
+        });
         $scope.getDays = function (year, month) {
             var result = [];
             for (var i = 1; i < 30; i ++) {
