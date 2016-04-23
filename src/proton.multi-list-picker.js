@@ -232,9 +232,11 @@
                             var cursor;
                             //we need to add stuff to the beginning of the list, until the selected index is in the middle
                             cursor = list.array.length - 1;
+                            var offset = -1;
                             while (pivot < 3) {
-                                list.view.splice(0, 0, angular.copy(list.array[cursor]));
-                                list.view[0].index = list.view[0].index - list.array.length;
+                                var copy = angular.copy(list.array[cursor]);
+                                list.view.splice(0, 0, copy);
+                                copy.index = offset --;
                                 cursor--;
                                 pivot++;
                                 if (cursor < 0) {
