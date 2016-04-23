@@ -8,9 +8,9 @@
     };
     var module = angular.module('proton.multi-list-picker', []);
     module.run(['$templateCache', function ($templateCache) {
-        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <ul class=\'lists\'>\n        <li class=\'toolbar\'>\n            <a class=\'toolbar-button\' ng-click=\'done({$model: model})\'>Done</a>\n        </li>\n        <li class=\'before-lists\' ng-init=\'first = false\'></li>\n        <li ng-repeat=\'list in items track by $index\' class=\'list-container {{$index == 0 || first ? \"first\" : \"\"}} {{$index == items.length - 1 ? \"last\" : \"\"}}\' data-index=\'{{$index}}\' proton-multi-list-motion data-motion-start=\'motionStart($event)\' data-motion-change=\'motionChange($event)\' data-motion-end=\'motionEnd($event)\'>\n            <span class=\'divider {{!list.value ? \"blank\" : \"\"}}\' ng-if=\'list.$divider\' ng-init=\'first = !list.value\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.value\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.value\'></span>\n            </span>\n            <ul class=\'list\' ng-if=\'!list.$divider\' data-selected=\'{{list.selected}}\'>\n                <li class=\'item {{item.index == list.selected ? \"selected\" : \"\"}} {{(!list.cycle && list.selected &lt; 3) ? \"offset-down-\" + (3 - list.selected) : \"\"}} {{(list.cycle ? item.cycleIndex : item.index) &lt; list.selected && (list.cycle ? item.cycleIndex : item.index) &gt;= list.selected - 3 ? \"distance-\" + (list.selected - (list.cycle ? item.cycleIndex : item.index)) : \"\"}} {{(list.cycle ? item.cycleIndex : item.index) &gt; list.selected && (list.cycle ? item.cycleIndex : item.index) &lt;= list.selected + 3 ? \"distance-\" + ((list.cycle ? item.cycleIndex : item.index) - list.selected) : \"\"}}\' ng-repeat=\'item in list.view track by $index\' data-index=\'{{item.index}}\' ng-click=\'select(list, item.index)\' style=\'width: {{list.width}}px;\'>\n                    <span ng-if=\'item.$placeholder\'></span>\n                    <span ng-if=\'!item.$placeholder && !bindHtml\' ng-bind=\'item.label\'></span>\n                    <span ng-if=\'!item.$placeholder && bindHtml\' ng-bind-html=\'item.label\'></span>\n                </li>\n            </ul>\n        </li>\n        <li class=\'after-lists\'></li>\n    </ul>\n    <div class=\'after\'></div>\n</div>");
+        $templateCache.put(templates.picker, "<div class=\'proton-multi-list-picker {{attachment}}\'>\n    <span ng-transclude class=\'proton-multi-list-picker-contents\'></span>\n    <div class=\'before\'></div>\n    <div class=\'container\'>\n        <ul class=\'lists\'>\n            <li class=\'toolbar\'>\n                <a class=\'toolbar-button\' ng-click=\'done({$model: model})\'>Done</a>\n            </li>\n            <li class=\'before-lists\' ng-init=\'first = false\'></li>\n            <li ng-repeat=\'list in items track by $index\'\n                class=\'list-container {{$index == 0 || first ? \"first\" : \"\"}} {{$index == items.length - 1 ? \"last\" : \"\"}}\'\n                data-index=\'{{$index}}\' proton-multi-list-motion data-motion-start=\'motionStart($event)\'\n                data-motion-change=\'motionChange($event)\' data-motion-end=\'motionEnd($event)\'>\n            <span class=\'divider {{!list.value ? \"blank\" : \"\"}}\' ng-if=\'list.$divider\' ng-init=\'first = !list.value\'>\n                <span ng-if=\'!bindHtml\' ng-bind=\'list.value\'></span>\n                <span ng-if=\'bindHtml\' ng-bind-html=\'list.value\'></span>\n            </span>\n                <ul class=\'list\' ng-if=\'!list.$divider\' data-selected=\'{{list.selected}}\'>\n                    <li class=\'item {{item.index == list.selected ? \"selected\" : \"\"}} {{(!list.cycle && list.selected &lt; 3) ? \"offset-down-\" + (3 - list.selected) : \"\"}} {{(list.cycle ? item.cycleIndex : item.index) &lt; list.selected && (list.cycle ? item.cycleIndex : item.index) &gt;= list.selected - 3 ? \"distance-\" + (list.selected - (list.cycle ? item.cycleIndex : item.index)) : \"\"}} {{(list.cycle ? item.cycleIndex : item.index) &gt; list.selected && (list.cycle ? item.cycleIndex : item.index) &lt;= list.selected + 3 ? \"distance-\" + ((list.cycle ? item.cycleIndex : item.index) - list.selected) : \"\"}}\'\n                        ng-repeat=\'item in list.view track by $index\' data-index=\'{{item.index}}\'\n                        ng-click=\'select(list, item.index)\' style=\'width: {{list.width}}px;\'>\n                        <span ng-if=\'item.$placeholder\'></span>\n                        <span ng-if=\'!item.$placeholder && !bindHtml\' ng-bind=\'item.label\'></span>\n                        <span ng-if=\'!item.$placeholder && bindHtml\' ng-bind-html=\'item.label\'></span>\n                    </li>\n                </ul>\n            </li>\n            <li class=\'after-lists\'></li>\n        </ul>\n    </div>\n    <div class=\'after\'></div>\n</div>");
     }]);
-    module.directive('protonMultiListPicker', ["$parse", "$timeout", function ($parse, $timeout) {
+    module.directive('protonMultiListPicker', ["$parse", function ($parse) {
         var controller = function ProtonMultiListPickerController($scope) {
             $scope.items = [];
             this.addDivider = function (divider) {
@@ -221,8 +221,9 @@
                     var from = Math.max(list.selected - 3, 0);
                     var to = Math.min(list.array.length - 1, list.selected + 3);
                     var i;
+                    var item;
                     for (i = from; i <= to; i++) {
-                        var item = angular.copy(list.array[i]);
+                        item = angular.copy(list.array[i]);
                         item.index = i;
                         list.view.push(item);
                     }
@@ -232,31 +233,35 @@
                             var cursor;
                             //we need to add stuff to the beginning of the list, until the selected index is in the middle
                             cursor = list.array.length - 1;
-                            var offset = -1;
                             while (pivot < 3) {
                                 var copy = angular.copy(list.array[cursor]);
+                                copy.index = cursor;
                                 list.view.splice(0, 0, copy);
-                                copy.index = offset --;
                                 cursor--;
                                 pivot++;
                                 if (cursor < 0) {
                                     cursor = list.array.length - 1;
                                 }
                             }
+                            console.log(pivot);
                             //if after padding from the left, the view is still short of 7 items, we need to pad from the right
                             cursor = 0;
                             while (list.view.length < 7) {
-                                list.view.push(angular.copy(list.array[cursor]));
-                                list.view[list.view.length - 1].index = list.view[pivot].index + cursor + 1;
+                                item = angular.copy(list.array[cursor]);
+                                item.index = cursor;
+                                list.view.push(item);
+                                item.index = list.view[pivot].index + cursor + 1;
                                 cursor++;
                                 if (cursor == list.array.length) {
                                     cursor = 0;
                                 }
                             }
                         }
+                        var cycleIndex = list.view[3].index - 3;
                         angular.forEach(list.view, function (item) {
-                            item.cycleIndex = item.index;
+                            item.cycleIndex = cycleIndex ++;
                         });
+                        console.log(list.view);
                     }
                 });
                 (function () {
@@ -334,10 +339,16 @@
                 })();
                 $scope.select = function (list, index) {
                     if (angular.isObject($scope.model)) {
-                        $scope.model[list.alias] = list.array.length ? list.array[index].value : null;
-                        list.selected = index;
+                        try {
+                            $scope.model[list.alias] = list.array.length ? list.array[index].value : null;
+                        } catch (e) {
+                            console.error(list.array.length, index);
+                        }
                     }
+                    var previous = list.selected;
+                    list.selected = index;
                     $scope.$broadcast('protonMultiListPicker:selected', list);
+                    $scope.$emit('protonMultiListPicker:selected', list, index, previous);
                 };
             }
         };

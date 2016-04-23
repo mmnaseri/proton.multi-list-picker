@@ -7,11 +7,12 @@
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="../src/proton.multi-list-picker.js"></script>
+    <script src="app/sound.js"></script>
     <script src="app/app.js"></script>
     <script type="application/javascript" src="http://localhost:13001/livereload.js"></script>
     <style>
         .proton-multi-list-picker {
-            font-size: 30px;
+            font-size: 20px;
         }
         .red {
             color: red;
@@ -23,7 +24,7 @@
 <input type="text" ng-model="model.year" />
 <pre ng-bind="model | json"></pre>
 <pre ng-bind="showing | json"></pre>
-<input type="text" value="{{model.month + 1}}/{{model.day}}/{{model.year}}, {{model.hour}}:{{model.minute}} {{model.time}}" ng-click="showing = true" />
+<input type="text" value="{{model.month + 1}}/{{model.day}}/{{model.year}}, {{model.hour}}:{{model.minute}} {{model.time}}" ng-click="showing = !showing" />
 <select ng-model="attachment">
     <option>inline</option>
     <option>modal</option>

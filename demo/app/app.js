@@ -8,6 +8,7 @@
  */
 (function () {
     var module = angular.module('protonMultiListSelector', ['proton.multi-list-picker', 'ngSanitize']);
+    var sound = webkitAudioContext && !audioContext ? new WebAudioAPISound("resources/tock") : new Audio("resources/tock.mp3");
 
     module.run(function () {
         self && self.webView && self.webView.scrollView && (self.webView.scrollView.bounces = NO);
@@ -19,6 +20,7 @@
     module.controller("MainController", function ($scope) {
         $scope.pivotYear = 2000;
         $scope.model = {
+            month: 4
         };
         $scope.attachment = "inline";
         $scope.bindHtml = "true";
@@ -47,5 +49,13 @@
             }
             return result;
         };
+        $scope.$on("protonMultiListPicker:selected", function (event, list, current, previous) {
+            console.log(current, previous);
+            for (var i = 0; i < Math.abs(current - previous); i ++) {
+                setTimeout(function () {
+                    sound.play();
+                }, 500);
+            }
+        });
     });
 })();

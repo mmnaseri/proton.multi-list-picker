@@ -34,149 +34,249 @@
     display: none;
   }
 
-  .lists {
+  .container {
 
-    & {
-      display: inline-block;
-      margin: 0 auto;
-      padding: 0;
-      border: none;
-    }
-
-    .list-container {
+    .lists {
 
       & {
         display: inline-block;
-        vertical-align: top;
-        margin: 0;
+        margin: 0 auto;
         padding: 0;
+        border: none;
       }
 
-      &.transitioning {
-
-        &.one-up {
-          .item {
-            -webkit-animation: moveUp 0.1s;
-            -o-animation: moveUp 0.1s;
-            animation: moveUp 0.1s;
-          }
-        }
-
-        &.one-down {
-          .item {
-            -webkit-animation: moveDown 0.1s;
-            -o-animation: moveDown 0.1s;
-            animation: moveDown 0.1s;
-          }
-        }
-
-      }
-
-      &.first {
-        border-left: 1px solid #e9e9e9;
-      }
-
-      &.last {
-        border-right: 1px solid #e9e9e9;
-      }
-
-      .list {
+      .list-container {
 
         & {
-          border-top: 1px solid #e9e9e9;
-          border-bottom: 1px solid #e9e9e9;
-          height: 7.4em;
-          overflow: hidden;
-          display: block;
+          display: inline-block;
+          vertical-align: top;
+          margin: 0;
           padding: 0;
-          margin: 0;
-          min-width: 1.5em;
         }
 
-        .item {
+        &.transitioning {
 
-          & {
-            position: relative;
-            top: -1.8em;
-            display: block;
-            margin: 0 5px;
-            height: 1em;
-            padding: 0.2em 0.5em;
-            text-align: center;
+          &.one-up {
+            .item {
+              -webkit-animation: moveUp 0.1s;
+              -o-animation: moveUp 0.1s;
+              animation: moveUp 0.1s;
+            }
           }
 
-          &.selected {
-            margin-top: 0.4em;
-            margin-bottom: 0.4em;
-            font-weight: 400;
-          }
-
-          &.distance-1 {
-            opacity: 0.6;
-            transform : scale(1,0.7);
-            -webkit-transform:scale(1,0.7); /* Safari and Chrome */
-            -moz-transform:scale(1,0.7); /* Firefox */
-            -ms-transform:scale(1,0.7); /* IE 9+ */
-            -o-transform:scale(1,0.7); /* Opera */
-          }
-
-          &.distance-2 {
-            opacity: 0.3;
-            transform : scale(0.95,0.4);
-            -webkit-transform:scale(0.95,0.4); /* Safari and Chrome */
-            -moz-transform:scale(0.95,0.4); /* Firefox */
-            -ms-transform:scale(0.95,0.4); /* IE 9+ */
-            -o-transform:scale(0.95,0.4); /* Opera */
-          }
-
-          &.distance-3 {
-            opacity: 0.1;
-            transform : scale(1,0.1);
-            -webkit-transform:scale(1,0.1); /* Safari and Chrome */
-            -moz-transform:scale(1,0.1); /* Firefox */
-            -ms-transform:scale(1,0.1); /* IE 9+ */
-            -o-transform:scale(1,0.1); /* Opera */
-          }
-
-          &.offset-down-3 {
-            top: 2.4em;
-          }
-
-          &.offset-down-2 {
-            top: 1em;
-          }
-
-          &.offset-down-1 {
-            top: -0.4em;
+          &.one-down {
+            .item {
+              -webkit-animation: moveDown 0.1s;
+              -o-animation: moveDown 0.1s;
+              animation: moveDown 0.1s;
+            }
           }
 
         }
 
-      }
-
-      .divider {
-
-        & {
-          display: block;
-          padding: 0 1em 0 0.3em;
-          margin: 0;
-          font-weight: 600;
-          border-top: 1px solid #e9e9e9;
-          border-bottom: 1px solid #e9e9e9;
-          height: 7.4em;
-          overflow: hidden;
-          text-align: center;
-        }
-
-        &.blank {
-          border-top: none;
-          border-bottom: none;
+        &.first {
           border-left: 1px solid #e9e9e9;
+        }
+
+        &.last {
           border-right: 1px solid #e9e9e9;
         }
 
-        span {
-          top: 2.8em;
+        .list {
+
+          & {
+            border-top: 1px solid #e9e9e9;
+            border-bottom: 1px solid #e9e9e9;
+            height: 7.4em;
+            overflow: hidden;
+            display: block;
+            padding: 0;
+            margin: 0;
+            min-width: 1.5em;
+          }
+
+          .item {
+
+            & {
+              position: relative;
+              top: -1.8em;
+              display: block;
+              margin: 0 5px;
+              height: 1em;
+              padding: 0.2em 0.5em;
+              text-align: center;
+            }
+
+            &.selected {
+              margin-top: 0.4em;
+              margin-bottom: 0.4em;
+              font-weight: 400;
+            }
+
+            &.distance-1 {
+              opacity: 0.6;
+              transform : scale(1,0.7);
+              -webkit-transform:scale(1,0.7); /* Safari and Chrome */
+              -moz-transform:scale(1,0.7); /* Firefox */
+              -ms-transform:scale(1,0.7); /* IE 9+ */
+              -o-transform:scale(1,0.7); /* Opera */
+            }
+
+            &.distance-2 {
+              opacity: 0.3;
+              transform : scale(0.95,0.4);
+              -webkit-transform:scale(0.95,0.4); /* Safari and Chrome */
+              -moz-transform:scale(0.95,0.4); /* Firefox */
+              -ms-transform:scale(0.95,0.4); /* IE 9+ */
+              -o-transform:scale(0.95,0.4); /* Opera */
+            }
+
+            &.distance-3 {
+              opacity: 0.1;
+              transform : scale(1,0.1);
+              -webkit-transform:scale(1,0.1); /* Safari and Chrome */
+              -moz-transform:scale(1,0.1); /* Firefox */
+              -ms-transform:scale(1,0.1); /* IE 9+ */
+              -o-transform:scale(1,0.1); /* Opera */
+            }
+
+            &.offset-down-3 {
+              top: 2.4em;
+            }
+
+            &.offset-down-2 {
+              top: 1em;
+            }
+
+            &.offset-down-1 {
+              top: -0.4em;
+            }
+
+          }
+
+        }
+
+        .divider {
+
+          & {
+            display: block;
+            padding: 0 1em 0 0.3em;
+            margin: 0;
+            font-weight: 600;
+            border-top: 1px solid #e9e9e9;
+            border-bottom: 1px solid #e9e9e9;
+            height: 7.4em;
+            overflow: hidden;
+            text-align: center;
+          }
+
+          &.blank {
+            border-top: none;
+            border-bottom: none;
+            border-left: 1px solid #e9e9e9;
+            border-right: 1px solid #e9e9e9;
+          }
+
+          span {
+            top: 2.8em;
+            position: relative;
+          }
+
+        }
+
+      }
+
+    }
+
+    .before-lists {
+      display: block;
+      height: 1.4em;
+      border-top: 1px solid #d6d6d6;
+      border-bottom: 1px solid #d6d6d6;
+      background-color: #eaeaea;
+      position: relative;
+      top: 3em;
+      margin-bottom: -1.4em;
+      opacity: 0.4;
+    }
+
+    .after-lists {
+      display: none;
+
+    }
+
+  }
+
+  &.inline {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  &.modal, &.top, &.bottom {
+
+    .container {
+
+      & {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+      }
+
+      .lists {
+
+        & {
+          position: relative;
+          left: -50%;
+          top: -3.8em;
+          white-space: nowrap;
+          height: 9.1em;
+          background: #ffffff;
+        }
+
+        .toolbar {
+
+          & {
+            display: block;
+            height: 1em;
+            padding: .25em;
+            text-align: right;
+            background: #ededed;
+          }
+
+          .toolbar-button {
+            color: #6495ed;
+            font-weight: 400;
+            font-size: 1em;
+            line-height: 1em;
+            cursor: pointer;
+          }
+
+        }
+
+      }
+    }
+
+    .before {
+      position: absolute;
+      background: #000;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      opacity: 0.4;
+    }
+
+  }
+
+  &.top {
+
+    .container {
+      top: -2px;
+
+      .lists {
+        top: 0;
+
+        .list {
           position: relative;
         }
 
@@ -184,96 +284,33 @@
 
     }
 
-  }
-
-  .before-lists {
-    display: block;
-    height: 1.4em;
-    border-top: 1px solid #d6d6d6;
-    border-bottom: 1px solid #d6d6d6;
-    background-color: #eaeaea;
-    position: relative;
-    top: 3em;
-    margin-bottom: -1.4em;
-    opacity: 0.4;
-  }
-  
-  .after-lists {
-    display: none;
-
-  }
-
-  &.modal, &.top, &.bottom {
-
-    .toolbar {
-      display: block;
-      position: absolute;
-      height: 1.5em;
-      background: #e6e6e6;
-      width: 100%;
-      font-size: 0.9em;
-      line-height: 0.8em;
-      text-align: right;
-
-      .toolbar-button {
-        display: inline-block;
-        color: #6495ed;
-        font-weight: 500;
-        margin-right: 0.3em;
-        margin-top: 0.3em;
-      }
-
-    }
-
-    .before {
-      background: #5a5a5a;
-      opacity: 0.6;
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      top: 0;
-    }
-    
-    .lists {
-      position: absolute;
-      left: 50%;
-      width: auto;
-      margin-left: -250px; /* Half the width */
-
-      .list, .divider, .divider.blank {
-        background: #ffffff;
-        border-top: 1px solid #ffffff;
-        border-bottom: 1px solid #ffffff;
-      }
-
-    }
-
-  }
-
-  &.top {
-
     .toolbar {
       display: block;
       position: relative;
       margin-bottom: -1.7em;
-      top: 7.4em;
+      top: 7.6em;
     }
 
-    .lists {
-      top: 0;
-    }
   }
 
   &.bottom {
 
-    .toolbar {
-      top: -1.4em;
+    .container {
+
+      top: 100%;
+
+      .lists {
+
+        top: -9em;
+
+        .list {
+          position: relative;
+        }
+
+      }
+
     }
 
-    .lists {
-      bottom: 0;
-    }
   }
 
   &.modal {
