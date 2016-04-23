@@ -11,19 +11,30 @@
     <script type="application/javascript" src="http://localhost:13001/livereload.js"></script>
     <style>
         html {
-            font-size: 15px;
+            font-size: 20px;
         }
         .red {
             color: red;
         }
     </style>
 </head>
-<body ng-controller="MainController">
+<body ng-controller="MainController" ng-init="showing = false">
 <input type="text" ng-model="pivotYear" />
-<input type="text" ng-model="data.model.year" />
-<pre ng-bind="data.model | json"></pre>
-<input type="text" disabled value="{{data.model.month + 1}}/{{data.model.day}}/{{data.model.year}}, {{data.model.hour}}:{{data.model.minute}} {{data.model.time}}" />
-<proton:multi-list-picker ng-model="data.model" attachment="modal" bind-html="true">
+<input type="text" ng-model="model.year" />
+<pre ng-bind="model | json"></pre>
+<pre ng-bind="showing | json"></pre>
+<input type="text" value="{{model.month + 1}}/{{model.day}}/{{model.year}}, {{model.hour}}:{{model.minute}} {{model.time}}" ng-click="showing = true" />
+<select ng-model="attachment">
+    <option>inline</option>
+    <option>modal</option>
+    <option>top</option>
+    <option>bottom</option>
+</select>
+<select ng-model="bindHtml">
+    <option value="true">true</option>
+    <option value="false">false</option>
+</select>
+<proton:multi-list-picker ng-model="model" attachment="{{attachment}}" bind-html="{{bindHtml}}" done="showing = false" ng-show="showing">
     <proton:multi-list-picker-list alias="year" source="getYears()">
     </proton:multi-list-picker-list>
     <proton:multi-list-picker-list alias="month" cycle="true">

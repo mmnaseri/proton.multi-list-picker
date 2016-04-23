@@ -38,6 +38,13 @@
                 you will face exceptions when list items are being rendered</xs:documentation>
             </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="done" type="xs:string" use="optional" default="">
+            <xs:annotation>
+                <xs:documentation source="description">This is used to carry out an action when the
+                <strong>Done</strong> link is clicked. This link is not available in the <code>inline</code>
+                attachment mode.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="List">

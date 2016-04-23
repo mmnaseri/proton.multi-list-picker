@@ -18,15 +18,10 @@
 
     module.controller("MainController", function ($scope) {
         $scope.pivotYear = 2000;
-        $scope.data = {
-            model: {
-                year: 1953,
-                month: 11,
-                day: 4,
-                minute: 3,
-                hour: 3
-            }
+        $scope.model = {
         };
+        $scope.attachment = "inline";
+        $scope.bindHtml = "true";
         $scope.getYears = function () {
             var result = [];
             for (var i = $scope.pivotYear - 50; i < $scope.pivotYear + 50; i ++) {
