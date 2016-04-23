@@ -371,7 +371,7 @@
                     },
                     alias: $scope.alias,
                     cycle: $scope.cycle == "true",
-                    static: !$scope.source || $scope.static == "true",
+                    static: !$scope.source || $scope.static != "false",
                     strictMatching: $scope.strictMatching == "true"
                 });
             }

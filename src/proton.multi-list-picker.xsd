@@ -68,7 +68,7 @@
                 is provided, we will expect to see a list of <code>protonMultiListPickerListItem</code>s.</xs:documentation>
             </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="static" type="xs:boolean" use="optional" default="false">
+        <xs:attribute name="static" type="xs:boolean" use="optional" default="true">
             <xs:annotation>
                 <xs:documentation source="description">If set to <code>true</code> the source
                 provider will be only consulted once, This will improve the performance of the
