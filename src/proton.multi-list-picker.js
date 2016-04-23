@@ -243,14 +243,12 @@
                                     cursor = list.array.length - 1;
                                 }
                             }
-                            console.log(pivot);
                             //if after padding from the left, the view is still short of 7 items, we need to pad from the right
                             cursor = 0;
                             while (list.view.length < 7) {
                                 item = angular.copy(list.array[cursor]);
                                 item.index = cursor;
                                 list.view.push(item);
-                                item.index = list.view[pivot].index + cursor + 1;
                                 cursor++;
                                 if (cursor == list.array.length) {
                                     cursor = 0;
@@ -261,7 +259,6 @@
                         angular.forEach(list.view, function (item) {
                             item.cycleIndex = cycleIndex ++;
                         });
-                        console.log(list.view);
                     }
                 });
                 (function () {
@@ -339,11 +336,7 @@
                 })();
                 $scope.select = function (list, index) {
                     if (angular.isObject($scope.model)) {
-                        try {
-                            $scope.model[list.alias] = list.array.length ? list.array[index].value : null;
-                        } catch (e) {
-                            console.error(list.array.length, index);
-                        }
+                        $scope.model[list.alias] = list.array.length ? list.array[index].value : null;
                     }
                     var previous = list.selected;
                     list.selected = index;

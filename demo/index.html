@@ -7,7 +7,6 @@
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="../src/proton.multi-list-picker.js"></script>
-    <script src="app/sound.js"></script>
     <script src="app/app.js"></script>
     <script type="application/javascript" src="http://localhost:13001/livereload.js"></script>
     <style>
@@ -56,7 +55,7 @@
     </proton:multi-list-picker-list>
     <proton:multi-list-picker-divider>
     </proton:multi-list-picker-divider>
-    <proton:multi-list-picker-list alias="hour">
+    <proton:multi-list-picker-list alias="hour" cycle="true">
         <proton:multi-list-picker-list-item>00</proton:multi-list-picker-list-item>
         <proton:multi-list-picker-list-item>01</proton:multi-list-picker-list-item>
         <proton:multi-list-picker-list-item>02</proton:multi-list-picker-list-item>
@@ -71,7 +70,7 @@
         <proton:multi-list-picker-list-item>11</proton:multi-list-picker-list-item>
     </proton:multi-list-picker-list>
     <proton:multi-list-picker-divider>:</proton:multi-list-picker-divider>
-    <proton:multi-list-picker-list alias="minute" source="getMinutes()">
+    <proton:multi-list-picker-list alias="minute" source="getMinutes()" cycle="true">
     </proton:multi-list-picker-list>
     <proton:multi-list-picker-list alias="time">
         <proton-multi-list-picker-list-item>AM</proton-multi-list-picker-list-item>
