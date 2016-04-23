@@ -208,3 +208,28 @@ list picker.
 Below is an image of the example application in action:
 
 ![Example](http://i.imgur.com/bVhU2og.png)
+
+Sizing
+------
+
+The size of all the elements here is determined relative to the font-size of the
+list picker component. Therefore, if you want to change the size of a component
+specifically, you can select it by ID or via the `proton-multi-list-picker` class
+name:
+
+    .proton-multi-list-picker {
+        font-size: 20px;
+    }
+
+Styling
+-------
+
+The list is configured to show five items at a time and simulate a bevel effect as
+though the underlying list is a circular dial.
+
+This is all accomplished via the CSS file. You can play with these settings by modifying
+the SASS file `proton.multi-list-picker.scss` under `src`, or use your own style.
+
+The template for the directive can be loaded via `$templateCache` like this:
+
+    var template = $templateCache.get("$/proton/multi-list-picker/picker.html");
