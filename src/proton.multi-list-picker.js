@@ -69,9 +69,10 @@
             controller: ["$scope", controller],
             link: function ($scope, $element, $attrs) {
                 var parentScope = $element.parent().scope();
+                var ngModel = $parse($attrs.ngModel);
                 $scope.model = null;
                 $scope.$watch(function () {
-                    return $parse($attrs.ngModel)(parentScope);
+                    return ngModel(parentScope);
                 }, function (model) {
                     if (model) {
                         $scope.model = model;
@@ -246,13 +247,16 @@
                         list.view.push(item);
                     }
                     if (list.cycle) {
-                        if (list.view.length < 7) {
+                        if (list.view.length < 7 && list.array.length > 0) {
                             var pivot = list.selected - from;
                             var cursor;
                             //we need to add stuff to the beginning of the list, until the selected index is in the middle
                             cursor = list.array.length - 1;
                             while (pivot < 3) {
                                 var copy = angular.copy(list.array[cursor]);
+                                if (!copy) {
+                                    console.log(cursor);
+                                }
                                 copy.index = cursor;
                                 list.view.splice(0, 0, copy);
                                 cursor--;
@@ -273,10 +277,12 @@
                                 }
                             }
                         }
-                        var cycleIndex = list.view[3].index - 3;
-                        angular.forEach(list.view, function (item) {
-                            item.cycleIndex = cycleIndex ++;
-                        });
+                        if (list.view.length > 0) {
+                            var cycleIndex = list.view[3].index - 3;
+                            angular.forEach(list.view, function (item) {
+                                item.cycleIndex = cycleIndex ++;
+                            });
+                        }
                     }
                 });
                 (function () {
@@ -326,6 +332,9 @@
                     };
 
                     $scope.motionChange = function (event) {
+                        if (!$list) {
+                            return;
+                        }
                         var element = $list[0];
                         if (!element) {
                             return;
