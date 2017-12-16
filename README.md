@@ -1,6 +1,14 @@
 Multi-list Picker
 =================
 
+### This project is not being maintained
+
+Most of the code should work, and it has been tested well enough. However, without any need from my own projects for such component at the time, I simply do not have the time to properly maintain it. If anyone is interested in <em>owning</em> this project, I am more than happy to transfer ownership.
+
+Meanwhile, you can check out https://github.com/jasonmamy/cordova-wheel-selector-plugin which seems to be a maintained project with some of the same capabilities as this one.
+
+## Introduction
+
 The multi-list picker is a component that lets you pick a value
 from a list. Imagine a combobox, but only better.
 
